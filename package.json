@@ -1,0 +1,19 @@
+{
+  "name": "mytube",
+  "version": "1.0.0",
+  "description": "YouTube-like application, builg using node js and Mongo DB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taebinkim12/MyTube.git"
+  },
+  "author": "Taebin Kim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/taebinkim12/MyTube/issues"
+  },
+  "homepage": "https://github.com/taebinkim12/MyTube#readme"
+}
