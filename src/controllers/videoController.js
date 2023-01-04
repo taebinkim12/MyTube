@@ -1,5 +1,7 @@
 export const getRoot = (req, res) => {
-    res.render("roots/root");
+    res.render("roots/root", {
+        pageTitle: "Home"
+    });
 }
 
 export const getSearch = () => {

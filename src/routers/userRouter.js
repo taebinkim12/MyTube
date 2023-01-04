@@ -4,11 +4,15 @@ import {
     postDeleteUser,
     getUserEdit,
     postUserEdit,
-    getUserLogout
+    getUserLogout,
+    startGithubLogin,
+    finishGithubLogin
 } from "../controllers/userController"
 
 const userRouter = express.Router();
 
+userRouter.get("/github/start", startGithubLogin)
+userRouter.get("/github/finish", finishGithubLogin)
 userRouter.route("/logout").get(getUserLogout);
 userRouter.route("/edit").get(getUserEdit).post(postUserEdit);
 userRouter.route("/delete").post(postDeleteUser);
