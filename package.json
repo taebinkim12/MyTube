@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/taebinkim12/MyTube/issues"
   },
-  "homepage": "https://github.com/taebinkim12/MyTube#readme"
+  "homepage": "https://github.com/taebinkim12/MyTube#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.7",
+    "@babel/node": "^7.20.7",
+    "nodemon": "^2.0.20"
+  }
 }
