@@ -8,6 +8,7 @@ import { localMiddleware } from "./middlewares";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
+
 const app = express();
 
 const PORT = process.env.PORT || 4000;
@@ -27,6 +28,9 @@ app.use(
   })
 );
 app.use(localMiddleware);
+
+////// STATICS --> Telling express to allows users to view stuff inside when accessing this URL
+app.use("/uploads", express.static("uploads"));
 
 //// ROUTERS
 app.use("/", rootRouter);

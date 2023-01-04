@@ -1,6 +1,9 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
+import "dotenv/config"
+
+const isProduction = process.env.NODE_ENV === "production"
 
 export const getJoin = (req, res) => {
     res.render("users/join", {
@@ -56,7 +59,7 @@ export const postLogin = async (req, res) => {
         socialOnly: false,
     });
     if (!curUser) {
-        return res.status(400).render("login", { 
+        return res.status(400).render("users/login", { 
             pageTitle: "Login",
             errorMessage: "Username does not exist!",
         })
@@ -65,7 +68,7 @@ export const postLogin = async (req, res) => {
     // Checking for correct password
     const pwdMatch = await bcrypt.compare(password, curUser.password);
     if (!pwdMatch) {
-        return res.status(400).render("login", {
+        return res.status(400).render("users/login", {
             pageTitle: "Login",
             errorMessage: "Wrong Password"
         })
@@ -169,19 +172,133 @@ export const finishGithubLogin = async (req, res) => {
     }
 }
 
-export const getViewProfile = () => {
+export const getViewProfile = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id)/*.populate({
+        path: "videos",
+        populate: {
+            path: "owner",
+            model: "User",
+        },
+    });*/
+    
+    //const user = await User.findById(id).populate("videos");
+    if (!user) {
+      return res.status(404).render("404", { pageTitle: "User not found." });
+    }
+    return res.render("users/profile", {
+        pageTitle: user.name,
+        user,
+    });
+}
+
+export const getUserEdit = (req, res) => {
+    res.render("users/edit-profile", { pageTitle: "Edit Profile" });
 
 }
 
-export const postDeleteUser = () => {
+export const postUserEdit = async (req, res) => {
+    const userId = req.session.user._id;
+	const newName = req.body.name;
+	const newEmail = req.body.email;
+	const newUsername = req.body.username;
+	const newLocation = req.body.location;
+	const curEmail = req.session.user.email;
+	const curUsername = req.session.user.username;
 
+	if (curEmail !== newEmail || curUsername !== newUsername) {
+		// Trying to change Email
+		const emailExisting = await User.exists({ email: newEmail });
+		const usernameExisting = await User.exists({ username: newUsername });
+		if (emailExisting || usernameExisting) {
+			return res.status(400).render("users/edit-profile", { 
+				emailError: (emailExisting && (curEmail !== newEmail)) ,
+				usernameError: (usernameExisting && (curUsername !== newUsername)),
+			});
+		}
+	}
+
+    const file = req.file;
+    // findByIdAndUpdate by default returns the model BEFORE the update
+    //// Hence, gives "new" option will give updated user back
+    const updatedUser = await User.findByIdAndUpdate(
+        userId, 
+        {
+            // file.location for using aws s3 later...
+            avatarUrl: file ? (isProduction ? file.location : "/" + file.path) : req.session.user.avatarUrl,
+            name: newName,
+            email: newEmail,
+            username: newUsername,
+            location: newLocation,
+        },
+        { 
+            new: true
+        },
+    );
+    req.session.user = updatedUser;
+	
+    return res.redirect(`/users/${userId}`);
 }
 
-export const getUserEdit = () => {
-
+export const postDeleteUser = async (req, res) => {
+    const userId = res.locals.loggedInUser._id;
+    await User.findByIdAndDelete(userId);
+    req.session.loggedIn = false;
+    req.session.user = null;
+    return res.redirect("/");
 }
 
-export const postUserEdit = () => {
-
+export const getChangePwd = (req, res) => {
+    if (req.session.user.socialOnly) {
+        res.redirect("/");
+    }
+	res.render("users/change-password", { pageTitle: "Change Password" });
 }
 
+export const postChangePwd = async (req, res) => {
+    const { oldPassword, newPassword, newPasswordConfirmation } = req.body;
+	const { _id } = req.session.user;
+	const curUser = await User.findById(_id);
+
+	// Checking for currnet/old password
+	const curPwdMatching = await bcrypt.compare(oldPassword, curUser.password);
+	if (!curPwdMatching) {
+		return res.status(400).render("users/change-password", {
+			pageTitle: "Change Password",
+			errorMessage: "Current password does not match"
+		})
+	}
+
+	// Checking if the current and new password that user is trying to change matchs
+	if (oldPassword === newPassword) {
+		return res.status(400).render("users/change-password", {
+			pageTitle: "Change Password",
+			errorMessage: "Old and New password are identical"
+		})
+	}
+
+	// Checking new and newConfirmation
+	if (newPassword !== newPasswordConfirmation) {
+		return res.status(400).render("users/change-password", { 
+			pageTitle: "Change Passowrd",
+			errorMessage: "Confirmation does not match"
+		})
+	}
+
+	// Everything good, now changing the password
+	curUser.password = newPassword;
+	await curUser.save();
+
+	/*
+	//// Gotta update the session cause one can keep using the same session after changing the password
+	req.session.user.password = curUser.password;
+
+	//// Loggin the user out, so that they log in again
+	return res.redirect("/users/logout");
+	*/
+
+	//// Destroying the current session and redirect the user to login page
+	////// Strengthening the security
+	req.session.destroy();
+	return res.redirect("/login");
+}

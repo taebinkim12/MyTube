@@ -1,0 +1,22 @@
+extends ../base.pug 
+
+block content
+    if emailError
+        div This email is already taken
+    if usernameError
+        div This username is already taken
+    img(src=loggedInUser.avatarUrl, width="100", height="100")
+    form(method="POST", enctype="multipart/form-data")
+        label(for="avatar") Avatar
+        input(type="file", id="avatar", name="avatar", accept="image/*")
+        input(placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
+        input(placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
+        input(placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
+        input(placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
+        input(type="submit", value="Update Profile")
+        if !loggedInUser.socialOnly
+            hr
+            a(href="/users/edit/change-paassword") Change Password
+        hr
+        a(href="/users/delete") Delete the Account
+            

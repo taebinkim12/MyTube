@@ -6,16 +6,42 @@ import {
     postUserEdit,
     getUserLogout,
     startGithubLogin,
-    finishGithubLogin
+    finishGithubLogin,
+    getChangePwd,
+    postChangePwd
 } from "../controllers/userController"
+
+import { 
+    protectorMiddleware,
+    publicOnlyMiddleware,
+    uploadVideos,
+    uploadAvatars 
+} from "../middlewares";
 
 const userRouter = express.Router();
 
-userRouter.get("/github/start", startGithubLogin)
+userRouter.get("/github/start", publicOnlyMiddleware, startGithubLogin)
 userRouter.get("/github/finish", finishGithubLogin)
-userRouter.route("/logout").get(getUserLogout);
-userRouter.route("/edit").get(getUserEdit).post(postUserEdit);
-userRouter.route("/delete").post(postDeleteUser);
+userRouter
+    .route("/logout")
+    .all(protectorMiddleware)
+    .get(getUserLogout);
+userRouter
+    .route("/edit")
+    .all(protectorMiddleware)
+    .get(getUserEdit)
+    .post(uploadAvatars.single("avatar"), postUserEdit);
+userRouter
+    .route("/delete")
+    .all(protectorMiddleware)
+    .get(postDeleteUser);
+
+userRouter
+    .route("/edit/change-paassword")
+    .all(protectorMiddleware)
+    .get(getChangePwd)
+    .post(postChangePwd);
+
 userRouter.route("/:id").get(getViewProfile);
 
 

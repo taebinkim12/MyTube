@@ -13,16 +13,10 @@ header
                 li
                     a(href="/users/edit") Edit Profile
                 li
-                    a(href="/users/logout")  Log Out
-                li
                     a(href=`/users/${loggedInUser._id}`)
-                        if loggedInUser.avatarUrl === undefined
-                            span 😀
-                        else
-                            if loggedInUser.avatarUrl.includes("github")
-                                img(src=loggedInUser.avatarUrl)
-                            else
-                                img(src=loggedInUser.avatarUrl)
+                        span #{loggedInUser.name}'s profile
+                li
+                    a(href="/users/logout")  Log Out
             else
                 li
                     a(href="/login")  Login                        
