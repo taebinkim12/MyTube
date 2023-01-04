@@ -1,0 +1,18 @@
+/ -> Home
+/join
+/login
+/search
+
+
+/videos/:id --> watch video with certain id
+/videos/:id/edit 
+/videos/:id/delete
+/videos/upload
+
+
+/users/:id --> See User's profile
+/users/logout
+/users/edit --> Edit my profile
+/users/remove
+
+
