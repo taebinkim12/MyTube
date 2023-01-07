@@ -11,7 +11,7 @@ const videoSchema = new mongoose.Schema({
     },
     fileUrl: { type: String, required: true },   
     owner: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
-    // comments: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, required: true, ref: "Comment" }],
 });
 
 videoSchema.static("formatHashtags", function(hashtags) {

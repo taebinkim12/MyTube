@@ -1,4 +1,6 @@
 import User from "../models/User";
+import Comment from "../models/Comment";
+import Video from "../models/Video";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
 import "dotenv/config"
@@ -174,15 +176,14 @@ export const finishGithubLogin = async (req, res) => {
 
 export const getViewProfile = async (req, res) => {
     const { id } = req.params;
-    const user = await User.findById(id)/*.populate({
+    const user = await User.findById(id).populate({
         path: "videos",
         populate: {
             path: "owner",
             model: "User",
         },
-    });*/
+    });
     
-    //const user = await User.findById(id).populate("videos");
     if (!user) {
       return res.status(404).render("404", { pageTitle: "User not found." });
     }

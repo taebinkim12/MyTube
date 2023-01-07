@@ -1,0 +1,62 @@
+video {
+    width: 100%;
+}
+
+#videoContainer {
+    width: 100%;
+    position: relative;
+}
+
+
+.videoControls {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    align-items: center;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 10px;
+    width: 95%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 4fr 1fr auto;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 10px;
+    left: 0;
+    box-sizing: border-box;
+    color: white;
+}
+
+.showing {
+    opacity: 1;
+}
+
+.videoControls__play {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.videoControls__playBtn {
+    margin: 0px 15px;
+}
+
+.videoControls__time {
+    font-size: 12px;
+}
+
+.videoControls__volume {
+    display: flex;
+    align-items: center;
+    
+}
+
+.videoControls__volume span {
+    margin-left: 10px;
+}
+
+.videoControls__volume i {
+    font-size: 20px;
+}

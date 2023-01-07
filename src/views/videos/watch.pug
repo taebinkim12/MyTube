@@ -1,0 +1,60 @@
+extends ../base
+
+block content
+    link(rel="stylesheet", href="/clients/videoPlayer.css")
+    link(rel="stylesheet", href="/clients/commentSection.css")
+    div#videoContainer(data-id=video._id)
+        if isProduction
+            video(src=video.fileUrl)
+        else
+            video(src="/"+video.fileUrl, width="100%")
+
+        div#videoControls.videoControls
+            div.videoControls__play
+                span#play.videoControls__playBtn
+                    i.fas.fa-play
+                div.videoControls__time
+                    span#currenTime 00:00
+                    span  / 
+                    span#totalTime 00:00
+            input(type="range",step="1", value="0", min="0")#timeline.videoControls__timeline
+            div.videoControls__volume
+                input(type="range",step="0.1", value=0.5, min="0", max="1")#volume
+                span#mute
+                    i.fas.fa-volume-up
+            div
+                span#fullScreen
+                    i.fas.fa-expand
+
+    div
+        p=video.title
+        small=video.description
+        br
+        small=video.createdAt
+    div
+        small Uploaded by 
+            a(href=`/users/${video.owner._id}`)=video.owner.name
+    if String(video.owner._id) === String(loggedInUser._id)
+        a(href=`${video.id}/edit`) Edit Video &rarr;
+        br
+        a(href=`${video.id}/delete`) Delete Video &rarr;
+    if loggedIn
+        div.video__add-comments
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="5", placeholder="Leave a comment")
+                button Leave a Comment
+    div.video__comments
+        ul 
+            each comment in video.comments.reverse()
+                li.video__comment(data-id=comment._id)
+                    i.fas.fa-comment
+                    span #{comment.text}
+                    if String(loggedInUser._id) === String(comment.owner._id) 
+                        span#deleteCommentBtn ❌
+
+
+
+block scripts
+    script(src="/clients/videoPlayer.js")
+    if loggedIn
+        script(src="/clients/commentSection.js")

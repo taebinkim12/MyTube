@@ -1,0 +1,10 @@
+extends ../base
+include ../mixins/video
+
+block content
+    div
+        each video in videos
+            div 
+                +video(video)
+        else
+            span No videos found

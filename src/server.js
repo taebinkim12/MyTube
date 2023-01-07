@@ -2,6 +2,7 @@ import express from "express";
 import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
+import apiRouter from "./routers/apiRouter";
 import "dotenv/config"
 import "./db";
 import { localMiddleware } from "./middlewares";
@@ -28,14 +29,17 @@ app.use(
   })
 );
 app.use(localMiddleware);
+app.use(express.json());
 
 ////// STATICS --> Telling express to allows users to view stuff inside when accessing this URL
 app.use("/uploads", express.static("uploads"));
+app.use("/clients", express.static("./src/clients"))
 
 //// ROUTERS
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
+app.use("/api", apiRouter);
 
 
 //// Initializing PORT
