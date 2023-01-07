@@ -2,7 +2,7 @@ import Video from "../models/Video";
 import User from "../models/User";
 import Comment from "../models/Comment";
 
-let isProduction = process.env.isProduction;
+let isProduction = process.env.NODE_ENV  === "production";
 
 export const getRoot = async (req, res) => {
     const videos = await Video.find().sort({ createdAt: "desc" }).populate("owner");
@@ -61,7 +61,7 @@ export const postUpload = async (req, res) => {
         // Updating the DB
         const videoOwner = await User.findById(user._id);
         videoOwner.videos.push(newVideo._id);
-        videoOwner.save();
+        await videoOwner.save();
         res.redirect("/");
     } catch(error) {
         res.status(400).render("videos/upload", { pageTitle: "Upload Video", errorMessage: error._message });
