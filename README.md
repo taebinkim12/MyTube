@@ -6,8 +6,8 @@ YouTube-like application built using node js and Mongo DB
 ___
 - Thank you very much for visiting
 - This application is built using `Node JS` and `Mongo DB` in its essential
-  - Using `express` as its foundation
-  - Using `pug` for front-end rendering
+  - Using `express` to configure and construct backend
+  - Using `pug` for frontend
   
 ## Deployment
 ___
