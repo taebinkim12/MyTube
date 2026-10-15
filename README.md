@@ -13,7 +13,6 @@ ___
 ___
 - This application is up and running!
   - Deployed using `Heroku` and `AWS S3` for file storage
-- You can visit my application <a href="https://mytube.herokuapp.com">here!</a>
 
 ## Features
 ___
